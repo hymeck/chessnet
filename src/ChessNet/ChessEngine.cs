@@ -1,4 +1,5 @@
-﻿using ChessNet.Converters;
+﻿using System.Collections.Generic;
+using ChessNet.Converters;
 
 namespace ChessNet
 {
@@ -9,25 +10,34 @@ namespace ChessNet
         public readonly PieceHolder PieceHolder = new();
 
         public Color CurrentMoveColor = Color.White;
+
+        public ChessEngine()
+        {
+            InitPieces();
+        }
         
-        public bool PickPiece(Square pieceSquare)
+        public bool CanPickPiece(Square pieceSquare)
         {
             var pieceEntry = this[pieceSquare];
-            
-            if (pieceEntry.Color != CurrentMoveColor)
-                return false;
-            
-            // rest logic
-
-            return true;
+            return pieceEntry.Color == CurrentMoveColor;
         }
 
-        public bool PickPiece(int pieceX, int pieceY) => PickPiece(SquareConverter.FromCartesian(pieceX, pieceY));
+        public bool CanPickPiece(int piecePosition) => CanPickPiece(SquareConverter.FromInt32(piecePosition));
+
+        public bool CanPickPiece(int pieceX, int pieceY) => CanPickPiece(SquareConverter.FromCartesian(pieceX, pieceY));
 
         public PieceEntry this[Square square] => 
             Board.IsOnBoard(square) ? GetPieceEntryFromBoardSquare(square) : PieceEntry.Empty;
 
         private PieceEntry GetPieceEntryFromBoardSquare(Square square) => 
             PieceHolder.GetPieceEntry((int) square);
+
+        private void InitPieces()
+        {
+            PieceHolder.Entries = new Dictionary<int, PieceEntry>(64)
+            {
+                {19, new PieceEntry(Piece.Knight, Color.White)}
+            };
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace ChessNet.Tests
         public void PickPiece_OutOfBoard()
         {
             var engine = new ChessEngine();
-            var picked = engine.PickPiece(-10, 44);
+            var picked = engine.CanPickPiece(-10, 44);
             picked.ShouldBe(false);
         }
         
@@ -17,8 +17,16 @@ namespace ChessNet.Tests
         public void PickPiece_EmptyFromBoard()
         {
             var engine = new ChessEngine();
-            var picked = engine.PickPiece(0, 0);
+            var picked = engine.CanPickPiece(0, 0);
             picked.ShouldBe(false);
+        }
+        
+        [Fact]
+        public void PickPiece_TakeKnight()
+        {
+            var engine = new ChessEngine();
+            var picked = engine.CanPickPiece(19);
+            picked.ShouldBe(true);
         }
     }
 }

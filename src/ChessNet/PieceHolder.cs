@@ -5,7 +5,7 @@ namespace ChessNet
     public class PieceHolder
     {
         // todo: redo
-        public readonly Dictionary<int, PieceEntry> Entries = new(64);
+        public Dictionary<int, PieceEntry> Entries = new(64);
 
         public PieceEntry GetPieceEntry(int square)
         {

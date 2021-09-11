@@ -13,7 +13,7 @@ namespace ChessNet
              *  move is legal when specified piece may move and checkmate does not occur after that move
              */
             
-            var cmd = GetPieceCommand(piece, pieceColor, square);
+            var cmd = GetPieceCommand(piece, pieceColor, square, engine);
             var moves = new List<int>(64);
             for (var i = 0; i < 64; i++)
             {
@@ -25,12 +25,13 @@ namespace ChessNet
             return moves.AsReadOnly();
         }
 
-        private IPieceMovement GetPieceCommand(Piece piece, Color pieceColor, int square)
+        private IPieceMovement GetPieceCommand(Piece piece, Color pieceColor, int square, ChessEngine engine)
         {
             return piece switch
             {
                 // todo: implement for other pieces
                 Piece.Knight => new KnightMovement(square, pieceColor),
+                Piece.Bishop => new BishopMovement(square, pieceColor, engine),
                 _ => throw new NotImplementedException(nameof(GetPieceCommand))
             };
         }

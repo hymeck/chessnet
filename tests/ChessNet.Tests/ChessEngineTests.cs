@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using ChessNet.Converters;
 using Shouldly;
 using Xunit;
 
@@ -39,5 +39,18 @@ namespace ChessNet.Tests
             
             moves.Count.ShouldBe(8);
         }
+        
+        [Fact]
+        public void GeneratePossibleMoves_Bishop()
+        {
+            var engine = new ChessEngine();
+            var converter = new SquareConverter();
+            var moves = engine
+                .GeneratePossibleMoves(converter.FromInt32(10));
+            
+            moves.Count.ShouldBe(4);
+        }
+        
+        
     }
 }

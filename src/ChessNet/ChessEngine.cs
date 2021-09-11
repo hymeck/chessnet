@@ -50,7 +50,8 @@ namespace ChessNet
             {
                 {19, new PieceEntry(Piece.Knight, Color.White)},
                 {wk, new PieceEntry(Piece.King, Color.White)},
-                {bk, new PieceEntry(Piece.King, Color.Black)}
+                {bk, new PieceEntry(Piece.King, Color.Black)},
+                {10, new PieceEntry(Piece.Bishop, Color.White)}
             };
 
             _whiteKingSquare = wk;

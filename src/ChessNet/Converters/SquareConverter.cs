@@ -14,5 +14,13 @@
             int.TryParse(square, out var numericSquare) 
                 ? FromInt32(numericSquare)
                 : Square.Empty;
+
+        public Square FromCartesian(int squareX, int squareY)
+        {
+            if (squareX is < 0 or > 63 || squareY is < 0 or > 63)
+                return Square.Empty;
+            var squareValueConverter = new SquareValueConverter();
+            return (Square)squareValueConverter.To1DPosition(squareX, squareY);
+        }
     }
 }

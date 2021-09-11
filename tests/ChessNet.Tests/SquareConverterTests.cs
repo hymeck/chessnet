@@ -51,5 +51,27 @@ namespace ChessNet.Tests
             var square = squareConverter.FromString("0");
             square.ShouldBe(Square.A8);
         }
+
+        [Theory]
+        [InlineData(-1, 0, Square.Empty)]
+        [InlineData(0, -1, Square.Empty)]
+        [InlineData(-1, -1, Square.Empty)]
+        [InlineData(-1, 100, Square.Empty)]
+        [InlineData(100, -1, Square.Empty)]
+        [InlineData(100, 100, Square.Empty)]
+        public void FromCartesian_InvalidCartesian(int x, int y, Square expected)
+        {
+            var squareConverter = new SquareConverter();
+            var actual = squareConverter.FromCartesian(x, y);
+            actual.ShouldBe(expected);
+        }
+        
+        [Fact]
+        public void FromCartesian_ValidCartesian()
+        {
+            var squareConverter = new SquareConverter();
+            var actual = squareConverter.FromCartesian(0, 0);
+            actual.ShouldBe(Square.A8);
+        }
     }
 }

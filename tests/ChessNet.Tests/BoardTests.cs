@@ -1,11 +1,11 @@
-﻿using System;
-using Shouldly;
+﻿using Shouldly;
 using Xunit;
 
 namespace ChessNet.Tests
 {
     public class BoardTests
     {
+        [Fact]
         public void IsOn()
         {
             var board = new Board();

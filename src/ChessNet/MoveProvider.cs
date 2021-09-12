@@ -32,6 +32,7 @@ namespace ChessNet
                 // todo: implement for other pieces
                 Piece.Knight => new KnightMovement(square, pieceColor),
                 Piece.Bishop => new BishopMovement(square, pieceColor, engine),
+                Piece.Rook => new RookMovement(square, pieceColor, engine),
                 _ => throw new NotImplementedException(nameof(GetPieceCommand))
             };
         }

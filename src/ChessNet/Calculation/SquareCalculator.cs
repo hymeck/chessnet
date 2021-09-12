@@ -25,5 +25,9 @@ namespace ChessNet.Calculation
         public int SignY(int from, int to) => Math.Sign(DeltaY(from, to));
 
         public (int signX, int signY) Signs(int from, int to) => (SignX(from, to), SignY(from, to));
+        
+        public bool AreOnFile(int from, int to) => AbsDeltaY(from, to) != 0 && AbsDeltaX(from, to) == 0;
+        
+        public bool AreOnRank(int from, int to) => AbsDeltaY(from, to) == 0 && AbsDeltaX(from, to) != 0;
     }
 }

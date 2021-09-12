@@ -51,6 +51,15 @@ namespace ChessNet.Tests
             moves.Count.ShouldBe(4);
         }
         
-        
+        [Fact]
+        public void GeneratePossibleMoves_Rook()
+        {
+            var engine = new ChessEngine();
+            var converter = new SquareConverter();
+            var moves = engine
+                .GeneratePossibleMoves(converter.FromInt32(11));
+            
+            moves.Count.ShouldBe(5);
+        }
     }
 }

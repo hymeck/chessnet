@@ -82,29 +82,39 @@ namespace ChessNet.Tests
         public void GeneratePossibleMoves_Pawn_Push_Forward_WithNoObstacles(Square from, Square to)
         {
             var pawn = PieceEntry.WhitePawn();
-            // var whiteKingSquare = Square.H1;
-            // var blackKingSquare = Square.A8;
-            //
-            // var whiteKing = PieceEntry.WhiteKing();
-            // var blackKing = PieceEntry.BlackKing();
-            //
-            // var pieces = new Dictionary<Square, PieceEntry>(64)
-            // {
-            //     {whiteKingSquare, whiteKing},
-            //     {blackKingSquare, blackKing},
-            //     {from, pawn}
-            // };
-            //
-            // var engine = new ChessEngine(pieces);
             var engine = new ChessEngine();
-            // // var moves = engine
-            // //     .GeneratePossibleMoves(to);
-            //
-            // // moves.Count.ShouldBe(2);
-
             var pawnMovement = new PawnMovement((int) from, (int) pawn.Color, engine);
             var canMove = pawnMovement.CanMove((int) to, (int) engine[to].Color);
             canMove.ShouldBe(Move.NoCapture);
+        }
+        
+        [Theory]
+        [InlineData(Square.E2, Square.A1)]
+        [InlineData(Square.E2, Square.E3)]
+        [InlineData(Square.E2, Square.E4)]
+        [InlineData(Square.E2, Square.A3)]
+        public void GeneratePossibleMoves_Pawn_IllegalMoves(Square from, Square to)
+        {
+            var pawn = PieceEntry.WhitePawn();
+            
+            var whiteKingSquare = Square.H1;
+            var blackKingSquare = Square.A8;
+            
+            var whiteKing = PieceEntry.WhiteKing();
+            var blackKing = PieceEntry.BlackKing();
+            
+            var pieces = new Dictionary<Square, PieceEntry>(64)
+            {
+                {whiteKingSquare, whiteKing},
+                {blackKingSquare, blackKing},
+                {from, pawn},
+                {Square.E3, PieceEntry.BlackBishop()}
+            };
+            
+            var engine = new ChessEngine(pieces);
+            var pawnMovement = new PawnMovement((int) from, (int) pawn.Color, engine);
+            var canMove = pawnMovement.CanMove((int) to, (int) engine[to].Color);
+            canMove.ShouldBe(Move.Illegal);
         }
     }
 }

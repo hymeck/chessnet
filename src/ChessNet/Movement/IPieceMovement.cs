@@ -2,7 +2,6 @@
 {
     public interface IPieceMovement
     {
-        bool CanMove(int toSquare, Color toColor);
-        bool IsCheckAfterMove(int toSquare, Color toColor);
+        Move CanMove(int toSquare, int toColor);
     }
 }

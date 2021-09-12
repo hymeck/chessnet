@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ChessNet.Converters;
 
 namespace ChessNet
@@ -14,12 +15,15 @@ namespace ChessNet
         private int _blackKingSquare;
         public Square WhiteKingSquare => (Square) _whiteKingSquare;
         public Square BlackKingSquare => (Square) _blackKingSquare;
+        
+        private int _enpassantSquare = (int) Square.Empty;
+        public Square EnPassantTargetSquare => (Square) _enpassantSquare;
 
         public Color CurrentMoveColor = Color.White;
 
-        public ChessEngine()
+        public ChessEngine(Dictionary<Square, PieceEntry> pieces = null)
         {
-            InitPieces();
+            InitPieces(pieces);
         }
         
         public bool CanPickPiece(Square pieceSquare, out PieceEntry pickedPiece)
@@ -42,25 +46,30 @@ namespace ChessNet
         private PieceEntry GetPieceEntryFromBoardSquare(Square square) => 
             PieceHolder.GetPieceEntry((int) square);
 
-        private void InitPieces()
+        private void InitPieces(Dictionary<Square, PieceEntry> pieces)
         {
-            var wk = 63;
-            var bk = 0;
-            PieceHolder.Entries = new Dictionary<int, PieceEntry>(64)
-            {
-                {19, PieceEntry.WhiteKnight()},
-                {wk, PieceEntry.WhiteKing()},
-                {bk, PieceEntry.BlackKing()},
-                {10, PieceEntry.WhiteBishop()},
-                {11, PieceEntry.WhiteRook()},
-                {9, PieceEntry.WhiteQueen()},
-            };
+            // todo: validate input
+            
+            var whiteKing = PieceEntry.WhiteKing();
+            var blackKing = PieceEntry.BlackKing();
+            var entries = pieces == null || pieces.Count < 3
+                ? new Dictionary<int, PieceEntry>(64)
+                {
+                    {19, PieceEntry.WhiteKnight()},
+                    {63, whiteKing},
+                    {0, blackKing},
+                    {10, PieceEntry.WhiteBishop()},
+                    {11, PieceEntry.WhiteRook()},
+                    {9, PieceEntry.WhiteQueen()},
+                }
+                : pieces
+                    .ToDictionary(kvp => (int) kvp.Key, kvp => kvp.Value);
 
-            _whiteKingSquare = wk;
-            _blackKingSquare = bk;
+            _whiteKingSquare = entries.FirstOrDefault(x => x.Value == whiteKing).Key;
+            _blackKingSquare = entries.FirstOrDefault(x => x.Value == blackKing).Key;
+            
+            PieceHolder.Entries = entries;
         }
-        
-        
 
         public IReadOnlyList<int> GeneratePossibleMoves(Square square)
         {

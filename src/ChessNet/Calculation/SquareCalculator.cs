@@ -14,10 +14,10 @@ namespace ChessNet.Calculation
         
         public int AbsDeltaY(int from, int to) => Math.Abs(DeltaY(from, to));
 
-        public bool AreOnDiagonalLine(int from, int to)
+        public int AreOnDiagonalLine(int from, int to)
         {
             var adx = AbsDeltaX(from, to);
-            return adx != 0 && adx == AbsDeltaY(from, to);
+            return adx != 0 && adx == AbsDeltaY(from, to) ? 1 : 0;
         }
         
         public int SignX(int from, int to) => Math.Sign(DeltaX(from, to));
@@ -26,8 +26,8 @@ namespace ChessNet.Calculation
 
         public (int signX, int signY) Signs(int from, int to) => (SignX(from, to), SignY(from, to));
         
-        public bool AreOnFile(int from, int to) => AbsDeltaY(from, to) != 0 && AbsDeltaX(from, to) == 0;
+        public int AreOnFile(int from, int to) => AbsDeltaY(from, to) != 0 && AbsDeltaX(from, to) == 0 ? 1 : 0;
         
-        public bool AreOnRank(int from, int to) => AbsDeltaY(from, to) == 0 && AbsDeltaX(from, to) != 0;
+        public int AreOnRank(int from, int to) => AbsDeltaY(from, to) == 0 && AbsDeltaX(from, to) != 0 ? 1 : 0;
     }
 }

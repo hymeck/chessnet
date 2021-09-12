@@ -17,8 +17,8 @@ namespace ChessNet
             var moves = new List<int>(64);
             for (var i = 0; i < 64; i++)
             {
-                var color = engine.UnsafeGetPieceEntry(i).Color;
-                if (cmd.CanMove(i, color) && !cmd.IsCheckAfterMove(i, color))
+                var color =  engine.UnsafeGetPieceEntry(i).Color;
+                if (cmd.CanMove(i, (int) color) != Move.Illegal)
                     moves.Add(i);
             }
 
@@ -27,13 +27,14 @@ namespace ChessNet
 
         private IPieceMovement GetPieceCommand(Piece piece, Color pieceColor, int square, ChessEngine engine)
         {
+            var color = (int) pieceColor;
             return piece switch
             {
                 // todo: implement for other pieces
-                Piece.Knight => new KnightMovement(square, pieceColor),
-                Piece.Bishop => new BishopMovement(square, pieceColor, engine),
-                Piece.Rook => new RookMovement(square, pieceColor, engine),
-                Piece.Queen => new QueenMovement(square, pieceColor, engine),
+                Piece.Knight => new KnightMovement(square, color),
+                Piece.Bishop => new BishopMovement(square, color, engine),
+                Piece.Rook => new RookMovement(square, color, engine),
+                Piece.Queen => new QueenMovement(square, color, engine),
                 _ => throw new NotImplementedException(nameof(GetPieceCommand))
             };
         }

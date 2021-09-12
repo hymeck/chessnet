@@ -1,4 +1,6 @@
-﻿using ChessNet.Converters;
+﻿using System.Collections.Generic;
+using ChessNet.Converters;
+using ChessNet.Movement;
 using Shouldly;
 using Xunit;
 
@@ -73,5 +75,36 @@ namespace ChessNet.Tests
             moves.Count.ShouldBe(16);
         }
         
+        
+        [Theory]
+        [InlineData(Square.E2, Square.E4)]
+        [InlineData(Square.E2, Square.E3)]
+        public void GeneratePossibleMoves_Pawn_Push_Forward_WithNoObstacles(Square from, Square to)
+        {
+            var pawn = PieceEntry.WhitePawn();
+            // var whiteKingSquare = Square.H1;
+            // var blackKingSquare = Square.A8;
+            //
+            // var whiteKing = PieceEntry.WhiteKing();
+            // var blackKing = PieceEntry.BlackKing();
+            //
+            // var pieces = new Dictionary<Square, PieceEntry>(64)
+            // {
+            //     {whiteKingSquare, whiteKing},
+            //     {blackKingSquare, blackKing},
+            //     {from, pawn}
+            // };
+            //
+            // var engine = new ChessEngine(pieces);
+            var engine = new ChessEngine();
+            // // var moves = engine
+            // //     .GeneratePossibleMoves(to);
+            //
+            // // moves.Count.ShouldBe(2);
+
+            var pawnMovement = new PawnMovement((int) from, (int) pawn.Color, engine);
+            var canMove = pawnMovement.CanMove((int) to, (int) engine[to].Color);
+            canMove.ShouldBe(Move.NoCapture);
+        }
     }
 }

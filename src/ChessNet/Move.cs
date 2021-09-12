@@ -5,11 +5,12 @@ namespace ChessNet
     [Flags]
     public enum Move
     {
-        Illegal   = 0b00000, // 0
-        NoCapture = 0b00001, // 1
-        Capture   = 0b00010, // 2
-        Castling  = 0b00101, // 4 + 1
-        EnPassant = 0b01010, // 8 + 2
-        Promotion = 0b10001, // 16 + 1
+        Empty     = 0b000000,
+        Illegal   = 0b000001,
+        NoCapture = 0b000010,
+        Capture   = 0b000100,
+        Castling  = 0b001000 | NoCapture,
+        EnPassant = 0b010000 | Capture,
+        Promotion = 0b100000 | NoCapture,
     }
 }

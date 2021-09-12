@@ -35,6 +35,7 @@ namespace ChessNet
                 Piece.Bishop => new BishopMovement(square, color, engine),
                 Piece.Rook => new RookMovement(square, color, engine),
                 Piece.Queen => new QueenMovement(square, color, engine),
+                Piece.Pawn => new PawnMovement(square, color, engine),
                 _ => throw new NotImplementedException(nameof(GetPieceCommand))
             };
         }

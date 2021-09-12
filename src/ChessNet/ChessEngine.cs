@@ -48,11 +48,12 @@ namespace ChessNet
             var bk = 0;
             PieceHolder.Entries = new Dictionary<int, PieceEntry>(64)
             {
-                {19, new PieceEntry(Piece.Knight, Color.White)},
-                {wk, new PieceEntry(Piece.King, Color.White)},
-                {bk, new PieceEntry(Piece.King, Color.Black)},
-                {10, new PieceEntry(Piece.Bishop, Color.White)},
-                {11, new PieceEntry(Piece.Rook, Color.White)}
+                {19, PieceEntry.WhiteKnight()},
+                {wk, PieceEntry.WhiteKing()},
+                {bk, PieceEntry.BlackKing()},
+                {10, PieceEntry.WhiteBishop()},
+                {11, PieceEntry.WhiteRook()},
+                {9, PieceEntry.WhiteQueen()},
             };
 
             _whiteKingSquare = wk;

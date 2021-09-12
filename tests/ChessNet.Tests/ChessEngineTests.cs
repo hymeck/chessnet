@@ -37,7 +37,7 @@ namespace ChessNet.Tests
             var moves = engine
                 .GeneratePossibleMoves(Square.D6);
             
-            moves.Count.ShouldBe(8);
+            moves.Count.ShouldBe(7);
         }
         
         [Fact]
@@ -61,5 +61,17 @@ namespace ChessNet.Tests
             
             moves.Count.ShouldBe(5);
         }
+        
+        [Fact]
+        public void GeneratePossibleMoves_Queen()
+        {
+            var engine = new ChessEngine();
+            var converter = new SquareConverter();
+            var moves = engine
+                .GeneratePossibleMoves(converter.FromInt32(9));
+            
+            moves.Count.ShouldBe(16);
+        }
+        
     }
 }

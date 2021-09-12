@@ -71,12 +71,15 @@ namespace ChessNet
             PieceHolder.Entries = entries;
         }
 
-        public IReadOnlyList<int> GeneratePossibleMoves(Square square)
+        public IReadOnlyList<Square> GeneratePossibleMoves(Square square)
         {
+            // todo: save valid state to not generate legal moves twice
             return CanPickPiece(square, out var pickedPiece)
                 ? _moveGenerator
                     .GeneratePossibleMoves(new PieceOnSquare(square, pickedPiece), this)
-                : new List<int>(0);
+                    .Select(x => (Square)x.square)
+                    .ToList()
+                : new List<Square>(0);
         }
 
         public int GetKingSquare(Color pieceEntryColor) => 

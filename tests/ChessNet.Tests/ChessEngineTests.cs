@@ -116,5 +116,22 @@ namespace ChessNet.Tests
             var canMove = pawnMovement.CanMove((int) to, (int) engine[to].Color);
             canMove.ShouldBe(Move.Illegal);
         }
+        
+        [Fact]
+        public void King_LegalMoves()
+        {
+            var whiteKing = PieceEntry.WhiteKing();
+            var blackKing = PieceEntry.BlackKing();
+            var pieces = new Dictionary<Square, PieceEntry>(64)
+            {
+                {Square.A6, whiteKing},
+                {Square.C8, blackKing},
+                {Square.E3, PieceEntry.BlackBishop()}
+            };
+            
+            var engine = new ChessEngine(pieces);
+            var moves = engine.GeneratePossibleMoves(Square.A6);
+            moves.Count.ShouldBe(4);
+        }
     }
 }

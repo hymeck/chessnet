@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ChessNet.Movement;
 
 namespace ChessNet
 {
     public class MoveProvider
     {
-        public IReadOnlyList<int> ProvideLegalMoves(Piece piece, Color pieceColor, int square, ChessEngine engine)
+        public IReadOnlyList<(int square, Move move)> ProvideLegalMoves(Piece piece, Color pieceColor, int square, ChessEngine engine)
         {
             /*
              * iterate over all squares:
@@ -14,12 +13,13 @@ namespace ChessNet
              */
             
             var cmd = GetPieceCommand(piece, pieceColor, square, engine);
-            var moves = new List<int>(64);
+            var moves = new List<(int square, Move move)>(64);
             for (var i = 0; i < 64; i++)
             {
                 var color =  engine.UnsafeGetPieceEntry(i).Color;
-                if (cmd.CanMove(i, (int) color) != Move.Illegal)
-                    moves.Add(i);
+                var move = cmd.CanMove(i, (int) color);
+                if ((move & Move.Illegal) != 0)
+                    moves.Add((i, move));
             }
 
             return moves.AsReadOnly();
@@ -28,7 +28,9 @@ namespace ChessNet
         private IPieceMovement GetPieceCommand(Piece piece, Color pieceColor, int square, ChessEngine engine)
         {
             var color = (int) pieceColor;
+#pragma warning disable 8509
             return piece switch
+#pragma warning restore 8509
             {
                 // todo: implement for other pieces
                 Piece.Knight => new KnightMovement(square, color),
@@ -36,7 +38,7 @@ namespace ChessNet
                 Piece.Rook => new RookMovement(square, color, engine),
                 Piece.Queen => new QueenMovement(square, color, engine),
                 Piece.Pawn => new PawnMovement(square, color, engine),
-                _ => throw new NotImplementedException(nameof(GetPieceCommand))
+                Piece.King => new KingMovement(square, color, engine)
             };
         }
     }

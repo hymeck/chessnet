@@ -14,12 +14,13 @@ namespace ChessNet
             
             var cmd = GetPieceCommand(piece, pieceColor, square, engine);
             var moves = new List<(int square, Move move)>(64);
-            for (var i = 0; i < 64; i++)
+            for (var to = 0; to < 64; to++)
             {
-                var color =  engine.UnsafeGetPieceEntry(i).Color;
-                var move = cmd.CanMove(i, (int) color);
-                if ((move & Move.Illegal) != 0)
-                    moves.Add((i, move));
+                var color =  (int) engine.UnsafeGetPieceEntry(to).Color;
+                var move = cmd.CanMove(to, color);
+                var moveAfterCheck = cmd.CanMoveWithCheckAfterMove(to, color);
+                if ((move & Move.Illegal) != 0 && moveAfterCheck != 1)
+                    moves.Add((to, move));
             }
 
             return moves.AsReadOnly();
@@ -33,7 +34,7 @@ namespace ChessNet
 #pragma warning restore 8509
             {
                 // todo: implement for other pieces
-                Piece.Knight => new KnightMovement(square, color),
+                Piece.Knight => new KnightMovement(square, color, engine),
                 Piece.Bishop => new BishopMovement(square, color, engine),
                 Piece.Rook => new RookMovement(square, color, engine),
                 Piece.Queen => new QueenMovement(square, color, engine),

@@ -23,16 +23,17 @@
             
             if (_engine.UnsafeGetPieceEntry(toSquare).Piece == Piece.King)
                 return Move.Illegal;
-            
-            var checkAfterMove = 0; // todo: implement check of check after moving
-            if (checkAfterMove == 1) // illegal
-                return Move.Illegal;
 
             if ((_pieceColor | toColor) == _pieceColor) // no capture
                 return Move.NoCapture;
             
             // capture
             return Move.Capture;
+        }
+
+        public int CanMoveWithCheckAfterMove(int toSquare, int toColor)
+        {
+            return _engine.CanCurrentKingBeCaptured(toSquare, toColor);
         }
     }
 }

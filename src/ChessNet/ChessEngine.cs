@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ChessNet.Converters;
+using ChessNet.Movement;
 
 namespace ChessNet
 {
     public class ChessEngine
     {
-        public readonly SquareConverter SquareConverter = new();
+        private readonly SquareConverter SquareConverter = new();
         public readonly Board Board = new();
-        public readonly PieceHolder PieceHolder = new();
-        public readonly MoveGenerator _moveGenerator = new();
+        private readonly PieceHolder PieceHolder;
+        private readonly MoveGenerator _moveGenerator = new();
 
-        private int _whiteKingSquare;
-        private int _blackKingSquare;
-        public Square WhiteKingSquare => (Square) _whiteKingSquare;
-        public Square BlackKingSquare => (Square) _blackKingSquare;
+        public Square WhiteKingSquare => (Square) PieceHolder.WhiteKing;
+        public Square BlackKingSquare => (Square) PieceHolder.WhiteKing;
         
         private int _enpassantSquare = (int) Square.Empty;
         public Square EnPassantTargetSquare => (Square) _enpassantSquare;
@@ -23,7 +22,7 @@ namespace ChessNet
 
         public ChessEngine(Dictionary<Square, PieceEntry> pieces = null)
         {
-            InitPieces(pieces);
+            PieceHolder = InitPieceHolder(pieces);
         }
         
         public bool CanPickPiece(Square pieceSquare, out PieceEntry pickedPiece)
@@ -46,7 +45,7 @@ namespace ChessNet
         private PieceEntry GetPieceEntryFromBoardSquare(Square square) => 
             PieceHolder.GetPieceEntry((int) square);
 
-        private void InitPieces(Dictionary<Square, PieceEntry> pieces)
+        private PieceHolder InitPieceHolder(Dictionary<Square, PieceEntry> pieces)
         {
             // todo: validate input
             
@@ -65,10 +64,7 @@ namespace ChessNet
                 : pieces
                     .ToDictionary(kvp => (int) kvp.Key, kvp => kvp.Value);
 
-            _whiteKingSquare = entries.FirstOrDefault(x => x.Value == whiteKing).Key;
-            _blackKingSquare = entries.FirstOrDefault(x => x.Value == blackKing).Key;
-            
-            PieceHolder.Entries = entries;
+            return new PieceHolder(entries);
         }
 
         public IReadOnlyList<Square> GeneratePossibleMoves(Square square)
@@ -82,7 +78,36 @@ namespace ChessNet
                 : new List<Square>(0);
         }
 
-        public int GetKingSquare(Color pieceEntryColor) => 
-            pieceEntryColor == Color.White ? _whiteKingSquare : _blackKingSquare;
+        public int CanCurrentKingBeCaptured(int toSquare, int toColor)
+        {
+            var color = (Color) toColor == Color.Black ? Color.White : Color.Black;
+            foreach (var (square, pieceEntry) in PieceHolder.GetPieces(color))
+            {
+                // todo: too many instantiations
+                var movement = GetPieceMovement(pieceEntry.Piece, pieceEntry.Color, square, this);
+                var move = movement.CanMove(toColor, toColor);
+                if ((move & Move.Illegal) != 0)
+                    return 1;
+            }
+
+            return 0;
+        }
+        
+        private IPieceMovement GetPieceMovement(Piece piece, Color pieceColor, int square, ChessEngine engine)
+        {
+            var color = (int) pieceColor;
+#pragma warning disable 8509
+            return piece switch
+#pragma warning restore 8509
+            {
+                // todo: implement for other pieces
+                Piece.Knight => new KnightMovement(square, color, engine),
+                Piece.Bishop => new BishopMovement(square, color, engine),
+                Piece.Rook => new RookMovement(square, color, engine),
+                Piece.Queen => new QueenMovement(square, color, engine),
+                Piece.Pawn => new PawnMovement(square, color, engine),
+                Piece.King => new KingMovement(square, color, engine)
+            };
+        }
     }
 }

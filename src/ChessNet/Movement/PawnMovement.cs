@@ -75,10 +75,6 @@ namespace ChessNet.Movement
                 return Move.Illegal;
             // -- specific --
             
-            var checkAfterMove = 0; // todo: implement check of check after moving
-            if (checkAfterMove == 1) // illegal
-                return Move.Illegal;
-            
             // todo: "how do we can optimize that?" (c) xD
             if (forward == 1 || push == 1)
             {
@@ -94,6 +90,11 @@ namespace ChessNet.Movement
             return enPassant == 1 
                 ? Move.EnPassant 
                 : Move.NoCapture;
+        }
+
+        public int CanMoveWithCheckAfterMove(int toSquare, int toColor)
+        {
+            return _engine.CanCurrentKingBeCaptured(toSquare, toColor);
         }
     }
 }

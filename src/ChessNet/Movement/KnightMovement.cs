@@ -7,11 +7,13 @@ namespace ChessNet.Movement
         private readonly SquareCalculator _calculator = new();
         private readonly int _pieceSquare;
         private readonly int _pieceColor;
+        private readonly ChessEngine _engine;
 
-        public KnightMovement(int pieceSquare, int pieceColor)
+        public KnightMovement(int pieceSquare, int pieceColor, ChessEngine engine)
         {
             _pieceSquare = pieceSquare;
             _pieceColor = pieceColor;
+            _engine = engine;
         }
 
         public Move CanMove(int toSquare, int toColor)
@@ -31,16 +33,17 @@ namespace ChessNet.Movement
                 return Move.Illegal;
             // -- specific --
             
-            var checkAfterMove = 0; // todo: implement check of check after moving
-            if (checkAfterMove == 1) // illegal
-                return Move.Illegal;
-            
-            
+            // potentially, expensive place
             if ((_pieceColor | toColor) == _pieceColor) // no capture
                 return Move.NoCapture;
             
             // capture
             return Move.Capture;
+        }
+
+        public int CanMoveWithCheckAfterMove(int toSquare, int toColor)
+        {
+            return _engine.CanCurrentKingBeCaptured(toSquare, toColor);
         }
     }
 }
